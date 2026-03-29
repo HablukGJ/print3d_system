@@ -1,0 +1,142 @@
+import React, { useState } from 'react';
+import { User as UserIcon, ShieldCheck, ArrowRightLeft, LogOut, Plus } from 'lucide-react';
+import { motion } from 'motion/react';
+import { api } from '../services/api.js';
+import { useAuth } from '../context/AuthContext.js';
+import { Group } from '../types/index.js';
+
+export const Profile: React.FC = () => {
+  const { user, logout, login } = useAuth();
+  const [groups, setGroups] = useState<Group[]>([]);
+
+  React.useEffect(() => {
+    api.groups.list().then(setGroups).catch(console.error);
+  }, []);
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const newName = formData.get('name') as string;
+    try {
+      const updatedUser = await api.profile.update(newName);
+      const token = localStorage.getItem('token')!;
+      login(token, updatedUser);
+      alert('Profile updated!');
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleSwitchAccount = (acc: { token: string, user: any }) => {
+    login(acc.token, acc.user);
+    window.location.reload(); // Simple way to refresh state
+  };
+
+  const recentAccounts = JSON.parse(localStorage.getItem('recentAccounts') || '[]');
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <h2 className="text-3xl font-black text-slate-800 tracking-tight">Profile</h2>
+        <p className="text-slate-500 font-medium">Manage your account settings</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="flex items-center gap-6 mb-8">
+              <div className="w-24 h-24 bg-indigo-600 rounded-3xl flex items-center justify-center text-white text-4xl font-black shadow-xl shadow-indigo-200">
+                {user?.name.charAt(0)}
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-slate-800">{user?.name}</h2>
+                <p className="text-slate-500 flex items-center gap-2">
+                  {user?.role === 'TEACHER' ? <ShieldCheck size={16} className="text-indigo-600" /> : <UserIcon size={16} className="text-indigo-600" />}
+                  {user?.role}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+              <div className="space-y-2">
+                <p className="text-sm text-slate-500 uppercase font-bold">Email</p>
+                <p className="text-slate-800 font-medium">{user?.email}</p>
+              </div>
+              {user?.role === 'STUDENT' && (
+                <div className="space-y-2">
+                  <p className="text-sm text-slate-500 uppercase font-bold">Group</p>
+                  <p className="text-slate-800 font-medium">
+                    {groups.find(g => g.id === user.group_id)?.name || 'Not assigned'}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-slate-800 border-b pb-2">Edit Profile</h3>
+              <form onSubmit={handleUpdateProfile} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 uppercase ml-1">Full Name</label>
+                  <input 
+                    type="text" 
+                    name="name" 
+                    defaultValue={user?.name}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-indigo-500"
+                    required
+                  />
+                </div>
+                <button type="submit" className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <ArrowRightLeft size={24} className="text-indigo-600" />
+                Switch Account
+              </h3>
+              <button 
+                onClick={logout}
+                className="text-rose-500 font-bold hover:underline flex items-center gap-1"
+              >
+                <LogOut size={16} /> Logout Current
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {recentAccounts.map((acc: any) => (
+                <button 
+                  key={acc.user.email}
+                  onClick={() => handleSwitchAccount(acc)}
+                  disabled={acc.user.email === user?.email}
+                  className={`flex items-center gap-4 p-4 rounded-2xl border transition-all text-left ${acc.user.email === user?.email ? 'border-indigo-600 bg-indigo-50' : 'border-slate-100 hover:border-indigo-300 hover:bg-slate-50'}`}
+                >
+                  <div className="w-12 h-12 bg-slate-200 rounded-xl flex items-center justify-center font-bold text-slate-600">
+                    {acc.user.name.charAt(0)}
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <p className="font-bold text-slate-800 truncate">{acc.user.name}</p>
+                    <p className="text-xs text-slate-500 truncate">{acc.user.email}</p>
+                  </div>
+                  {acc.user.email === user?.email && (
+                    <div className="bg-indigo-600 w-2 h-2 rounded-full" />
+                  )}
+                </button>
+              ))}
+              <button 
+                onClick={logout}
+                className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-dashed border-slate-300 text-slate-500 hover:border-indigo-300 hover:text-indigo-600 transition-all"
+              >
+                <Plus size={20} />
+                <span className="font-bold">Add New Account</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

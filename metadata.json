@@ -1,0 +1,5 @@
+{
+  "name": "Event Management System",
+  "description": "A full-stack application for managing educational events, groups, and rooms with role-based access for teachers and students.",
+  "requestFramePermissions": []
+}
