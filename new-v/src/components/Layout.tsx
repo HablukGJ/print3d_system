@@ -1,14 +1,12 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
-  Calendar, 
   Users, 
-  DoorOpen, 
   User as UserIcon,
   LogOut, 
-  BookOpen,
   ShieldCheck,
-  GraduationCap
+  LayoutDashboard,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 
@@ -26,18 +24,12 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   const navItems = [
-    { to: '/events', icon: Calendar, label: 'Schedule' },
-    { to: '/rooms', icon: DoorOpen, label: 'Rooms' },
-    { to: '/groups', icon: Users, label: 'Groups' },
+    { to: '/requests', icon: FileText, label: 'My Requests' },
     { to: '/profile', icon: UserIcon, label: 'Profile' },
   ];
 
-  if (user?.role === 'TEACHER') {
-    navItems.splice(3, 0, { to: '/students', icon: GraduationCap, label: 'Students' });
-  }
-
-  if (user?.role === 'STUDENT') {
-    navItems.splice(3, 0, { to: '/grades', icon: BookOpen, label: 'My Grades' });
+  if (user?.role === 'ADMIN') {
+    navItems.unshift({ to: '/admin', icon: LayoutDashboard, label: 'Admin Dashboard' });
   }
 
   return (
@@ -46,10 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       <aside className="w-72 bg-white border-r border-slate-200 flex flex-col sticky top-0 h-screen">
         <div className="p-8">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-              <ShieldCheck size={24} />
-            </div>
-            <h1 className="text-xl font-black text-slate-800 tracking-tight">EDU<span className="text-indigo-600">PORTAL</span></h1>
+            <h1 className="text-xl font-black text-slate-800 tracking-tight">3D<span className="text-indigo-600">PRINT</span></h1>
           </div>
 
           <nav className="space-y-2">

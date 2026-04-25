@@ -6,9 +6,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.js';
 import profileRoutes from './routes/profile.js';
-import studentRoutes from './routes/students.js';
-import gradeRoutes from './routes/grades.js';
-import crudRoutes from './routes/crud.js';
+import requestRoutes from './routes/requests.js';
 
 dotenv.config();
 
@@ -22,9 +20,7 @@ async function startServer() {
   // API Routes
   app.use('/api/auth', authRoutes);
   app.use('/api/profile', profileRoutes);
-  app.use('/api/students', studentRoutes);
-  app.use('/api/grades', gradeRoutes);
-  app.use('/api', crudRoutes);
+  app.use('/api/requests', requestRoutes);
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {

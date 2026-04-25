@@ -5,7 +5,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (token: string, user: User) => void;
-  logout: () => void;
+  logout: (removeFromRecent?: boolean) => void;
   isAuthReady: boolean;
 }
 
@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(newUser);
     localStorage.setItem('token', newToken);
     localStorage.setItem('user', JSON.stringify(newUser));
-    
+
     // Add to recent accounts
     const recent = JSON.parse(localStorage.getItem('recentAccounts') || '[]');
     const filtered = recent.filter((acc: any) => acc.user.email !== newUser.email);
@@ -39,7 +39,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('recentAccounts', JSON.stringify(updated));
   };
 
-  const logout = () => {
+  const logout = (removeFromRecent = false) => {
+    if (removeFromRecent && user) {
+      const recent = JSON.parse(localStorage.getItem('recentAccounts') || '[]');
+      const filtered = recent.filter((acc: any) => acc.user.email !== user.email);
+      localStorage.setItem('recentAccounts', JSON.stringify(filtered));
+    }
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
@@ -47,9 +52,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthReady }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, token, login, logout, isAuthReady }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 

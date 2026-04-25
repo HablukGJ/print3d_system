@@ -7,11 +7,11 @@ import { getJWTSecret } from '../middleware/auth.js';
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  const { email, password, name, role, group_id } = req.body;
+  const { email, password, name, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const stmt = db.prepare('INSERT INTO users (email, password, name, role, group_id) VALUES (?, ?, ?, ?, ?)');
-    stmt.run(email, hashedPassword, name, role, group_id || null);
+    const stmt = db.prepare('INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)');
+    stmt.run(email, hashedPassword, name, role);
     res.status(201).json({ message: 'User registered' });
   } catch (e) {
     res.status(400).json({ error: 'Email already exists or invalid data' });

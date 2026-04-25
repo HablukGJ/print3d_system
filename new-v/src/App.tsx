@@ -4,11 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext.js';
 import { Layout } from './components/Layout.js';
 import { Login } from './pages/Login.js';
 import { Register } from './pages/Register.js';
-import { Events } from './pages/Events.js';
-import { Rooms } from './pages/Rooms.js';
-import { Groups } from './pages/Groups.js';
-import { Students } from './pages/Students.js';
-import { Grades } from './pages/Grades.js';
+import { MyRequests } from './pages/MyRequests.js';
+import { AdminDashboard } from './pages/AdminDashboard.js';
 import { Profile } from './pages/Profile.js';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -27,15 +24,12 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
-        <Route path="/rooms" element={<ProtectedRoute><Rooms /></ProtectedRoute>} />
-        <Route path="/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
-        <Route path="/students" element={<ProtectedRoute><Students /></ProtectedRoute>} />
-        <Route path="/grades" element={<ProtectedRoute><Grades /></ProtectedRoute>} />
+        <Route path="/requests" element={<ProtectedRoute><MyRequests /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         
-        <Route path="/" element={<Navigate to="/events" replace />} />
-        <Route path="*" element={<Navigate to="/events" replace />} />
+        <Route path="/" element={<Navigate to="/requests" replace />} />
+        <Route path="*" element={<Navigate to="/requests" replace />} />
       </Routes>
     </AuthProvider>
   );

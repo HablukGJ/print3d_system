@@ -1,28 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, ShieldCheck } from 'lucide-react';
 import { motion } from 'motion/react';
 import { api } from '../services/api.js';
-import { Group, Role } from '../types/index.js';
+import { Role } from '../types/index.js';
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [role, setRole] = useState<Role>('STUDENT');
-  const [groupId, setGroupId] = useState<number | ''>('');
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [role, setRole] = useState<Role>('USER');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    api.groups.list().then(setGroups).catch(console.error);
-  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.auth.register({ email, password, name, role, group_id: groupId || null });
-      alert('Registered! Please login.');
+      await api.auth.register({ email, password, name, role });
       navigate('/login');
     } catch (err: any) {
       alert(err.message);
@@ -40,7 +33,7 @@ export const Register: React.FC = () => {
           <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-200">
             <ShieldCheck size={32} />
           </div>
-          <h1 className="text-3xl font-black text-slate-800 tracking-tight">EDU<span className="text-indigo-600">PORTAL</span></h1>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">3D<span className="text-indigo-600">PRINT</span></h1>
           <p className="text-slate-500 font-medium">Create your account</p>
         </div>
 
@@ -78,31 +71,16 @@ export const Register: React.FC = () => {
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 uppercase ml-1">Role</label>
-              <select 
-                value={role}
-                onChange={(e) => setRole(e.target.value as Role)}
-                className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white"
-              >
-                <option value="STUDENT">Student</option>
-                <option value="TEACHER">Teacher</option>
-              </select>
-            </div>
-            {role === 'STUDENT' && (
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1">Group</label>
-                <select 
-                  value={groupId}
-                  onChange={(e) => setGroupId(Number(e.target.value))}
-                  className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white"
-                >
-                  <option value="">Select Group</option>
-                  {groups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
-                </select>
-              </div>
-            )}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Role</label>
+            <select 
+              value={role}
+              onChange={(e) => setRole(e.target.value as Role)}
+              className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all bg-white"
+            >
+              <option value="USER">User</option>
+              <option value="ADMIN">Admin</option>
+            </select>
           </div>
           <button 
             type="submit" 
