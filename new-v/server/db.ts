@@ -14,27 +14,46 @@ db.exec(`
         );
 `);
 
-// Support for 'archived' status in print_requests
+// Support for additional columns and archived status
 const tableSql = db.prepare("SELECT sql FROM sqlite_master WHERE name = 'print_requests'").get() as any;
-if (tableSql && !tableSql.sql.includes("'archived'")) {
-    console.log("Migrating print_requests table to add 'archived' status...");
-    db.exec(`
-    CREATE TABLE print_requests_new (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      full_name TEXT NOT NULL,
-      student_group TEXT NOT NULL,
-      comment TEXT,
-      status TEXT CHECK(status IN ('pending', 'processing', 'completed', 'archived')) DEFAULT 'pending',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-    INSERT INTO print_requests_new (id, user_id, full_name, student_group, comment, status, created_at)
-    SELECT id, user_id, full_name, student_group, comment, status, created_at FROM print_requests;
-    DROP TABLE print_requests;
-    ALTER TABLE print_requests_new RENAME TO print_requests;
-  `);
-} else if (!tableSql) {
+
+const migrate = (sql: string) => {
+    const hasArchived = sql.includes("'archived'");
+    const hasFilePath = sql.includes("file_path");
+
+    if (!hasArchived || !hasFilePath) {
+        console.log("Migrating print_requests table...");
+        db.exec(`
+      CREATE TABLE print_requests_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        full_name TEXT NOT NULL,
+        student_group TEXT NOT NULL,
+        comment TEXT,
+        file_path TEXT,
+        file_original_name TEXT,
+        status TEXT CHECK(status IN ('pending', 'processing', 'completed', 'archived')) DEFAULT 'pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      );
+    `);
+
+        // Figure out which columns to copy
+        const columns = ['id', 'user_id', 'full_name', 'student_group', 'comment', 'status', 'created_at'];
+        const selectColumns = columns.join(', ');
+
+        db.exec(`
+      INSERT INTO print_requests_new (${selectColumns})
+      SELECT ${selectColumns} FROM print_requests;
+      DROP TABLE print_requests;
+      ALTER TABLE print_requests_new RENAME TO print_requests;
+    `);
+    }
+};
+
+if (tableSql) {
+    migrate(tableSql.sql);
+} else {
     db.exec(`
     CREATE TABLE print_requests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +61,8 @@ if (tableSql && !tableSql.sql.includes("'archived'")) {
       full_name TEXT NOT NULL,
       student_group TEXT NOT NULL,
       comment TEXT,
+      file_path TEXT,
+      file_original_name TEXT,
       status TEXT CHECK(status IN ('pending', 'processing', 'completed', 'archived')) DEFAULT 'pending',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES users(id)

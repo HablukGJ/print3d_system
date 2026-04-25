@@ -30,9 +30,6 @@ export const Register: React.FC = () => {
         className="max-w-md w-full bg-white p-8 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white mb-4 shadow-lg shadow-indigo-200">
-            <ShieldCheck size={32} />
-          </div>
           <h1 className="text-3xl font-black text-slate-800 tracking-tight">3D<span className="text-indigo-600">PRINT</span></h1>
           <p className="text-slate-500 font-medium">Create your account</p>
         </div>

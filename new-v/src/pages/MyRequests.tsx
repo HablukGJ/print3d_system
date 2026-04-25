@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, FileText, CheckCircle2, Loader2 } from 'lucide-react';
+import { Plus, Clock, FileText, CheckCircle2, Loader2, Paperclip, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { api } from '../services/api.js';
 import { PrintRequest } from '../types/index.js';
@@ -28,14 +28,9 @@ export const MyRequests: React.FC = () => {
   const handleCreateRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const data = {
-      full_name: formData.get('full_name') as string,
-      student_group: formData.get('student_group') as string,
-      comment: formData.get('comment') as string
-    };
 
     try {
-      await api.requests.create(data);
+      await api.requests.create(formData);
       setShowForm(false);
       fetchRequests();
       (e.target as HTMLFormElement).reset();
@@ -117,6 +112,14 @@ export const MyRequests: React.FC = () => {
                     <label className="text-xs font-bold text-slate-500 uppercase ml-1">Comment / Details</label>
                     <textarea name="comment" className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all min-h-[100px]" placeholder="Dimensions, material, or any specific instructions..." />
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Drawing / File (Optional)</label>
+                    <input
+                        type="file"
+                        name="drawing"
+                        className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                  </div>
                   <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all">Submit Request</button>
                 </form>
               </motion.div>
@@ -147,6 +150,20 @@ export const MyRequests: React.FC = () => {
                         </p>
                         {request.comment && (
                             <p className="mt-2 text-slate-600 text-sm line-clamp-2 max-w-md">{request.comment}</p>
+                        )}
+                        {request.file_path && (
+                            <div className="mt-3 flex items-center gap-2">
+                              <a
+                                  href={`/${request.file_path}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-200 transition-all border border-slate-200"
+                              >
+                                <Paperclip size={14} />
+                                <span className="truncate max-w-[200px]">{request.file_original_name}</span>
+                                <Download size={14} className="ml-1" />
+                              </a>
+                            </div>
                         )}
                       </div>
                     </div>

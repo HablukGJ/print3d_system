@@ -1,16 +1,39 @@
 import express from 'express';
 import db from '../db.js';
 import { authenticateToken } from '../middleware/auth.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
+
+// Configure multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'uploads';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 // Get all requests (Admin) or my requests (User)
 router.get('/', authenticateToken, (req: any, res) => {
   try {
     // Auto-archive requests older than 7 days
     db.prepare(`
-      UPDATE print_requests 
-      SET status = 'archived' 
+      UPDATE print_requests
+      SET status = 'archived'
       WHERE status != 'archived' 
       AND created_at < datetime('now', '-7 days')
     `).run();
@@ -33,15 +56,18 @@ router.get('/', authenticateToken, (req: any, res) => {
 });
 
 // Create a new request
-router.post('/', authenticateToken, (req: any, res) => {
+router.post('/', authenticateToken, upload.single('drawing'), (req: any, res) => {
   const { full_name, student_group, comment } = req.body;
   if (!full_name || !student_group) {
     return res.status(400).json({ error: 'FIO and group are required' });
   }
 
+  const file_path = req.file ? req.file.path : null;
+  const file_original_name = req.file ? req.file.originalname : null;
+
   try {
-    const stmt = db.prepare('INSERT INTO print_requests (user_id, full_name, student_group, comment) VALUES (?, ?, ?, ?)');
-    const result = stmt.run(req.user.id, full_name, student_group, comment);
+    const stmt = db.prepare('INSERT INTO print_requests (user_id, full_name, student_group, comment, file_path, file_original_name) VALUES (?, ?, ?, ?, ?, ?)');
+    const result = stmt.run(req.user.id, full_name, student_group, comment, file_path, file_original_name);
     res.status(201).json({ id: result.lastInsertRowid });
   } catch (e: any) {
     res.status(500).json({ error: e.message });

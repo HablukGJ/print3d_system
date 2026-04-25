@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Clock, FileText, CheckCircle2, Loader2, User as UserIcon, MoreVertical } from 'lucide-react';
+import { LayoutDashboard, Clock, FileText, CheckCircle2, Loader2, User as UserIcon, MoreVertical, Paperclip, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { api } from '../services/api.js';
 import { PrintRequest, RequestStatus } from '../types/index.js';
@@ -32,7 +32,6 @@ export const AdminDashboard: React.FC = () => {
       fetchRequests();
     } catch (err: any) {
       alert(err.message);
-      console.error('Failed to update status', err);
     } finally {
       setUpdatingId(null);
     }
@@ -121,6 +120,22 @@ export const AdminDashboard: React.FC = () => {
                       <div className="space-y-1">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Comment</p>
                         <p className="text-slate-600 font-medium whitespace-pre-wrap">{request.comment || 'No comment provided'}</p>
+
+                        {request.file_path && (
+                            <div className="mt-4 pt-4 border-t border-slate-200">
+                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Attachment</p>
+                              <a
+                                  href={`/${request.file_path}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-3 px-4 py-2 bg-white rounded-xl text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-all border border-indigo-100 shadow-sm"
+                              >
+                                <Paperclip size={18} />
+                                <span>{request.file_original_name}</span>
+                                <Download size={18} className="ml-2" />
+                              </a>
+                            </div>
+                        )}
                       </div>
                     </div>
 
