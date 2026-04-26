@@ -4,6 +4,7 @@ import { authenticateToken } from '../middleware/auth.js';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { sendEmail } from '../services/email.js';
 
 const router = express.Router();
 
@@ -68,6 +69,23 @@ router.post('/', authenticateToken, upload.single('drawing'), (req: any, res) =>
   try {
     const stmt = db.prepare('INSERT INTO print_requests (user_id, full_name, student_group, comment, file_path, file_original_name) VALUES (?, ?, ?, ?, ?, ?)');
     const result = stmt.run(req.user.id, full_name, student_group, comment, file_path, file_original_name);
+
+    // Notify admins
+    const admins = db.prepare("SELECT email FROM users WHERE role = 'ADMIN'").all() as { email: string }[];
+    for (const admin of admins) {
+      sendEmail({
+        to: admin.email,
+        subject: 'New Print Request Received',
+        text: `A new print request has been submitted by ${full_name} (${student_group}).\n\nComment: ${comment || 'None'}\n\nCheck the admin dashboard for details.`,
+        html: `
+          <h3>New Print Request</h3>
+          <p><strong>From:</strong> ${full_name} (${student_group})</p>
+          <p><strong>Comment:</strong> ${comment || 'None'}</p>
+          <p>View details in the <a href="${req.protocol}://${req.get('host')}/admin">Admin Dashboard</a>.</p>
+        `
+      });
+    }
+
     res.status(201).json({ id: result.lastInsertRowid });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
@@ -97,6 +115,32 @@ router.patch('/:id/status', authenticateToken, (req: any, res) => {
       const result = db.prepare('UPDATE print_requests SET status = ? WHERE id = ?').run(status, requestId);
       if (result.changes === 0) {
         return res.status(404).json({ error: 'Request not found' });
+      }
+
+      // Notify user if completed
+      if (status === 'completed') {
+        const request = db.prepare(`
+          SELECT r.*, u.email 
+          FROM print_requests r 
+          JOIN users u ON r.user_id = u.id 
+          WHERE r.id = ?
+        `).get(requestId) as any;
+
+        if (request && request.email) {
+          sendEmail({
+            to: request.email,
+            subject: 'Your Print Request is Completed!',
+            text: `Hello ${request.full_name},\n\nYour print request submitted on ${request.created_at} is now COMPLETED.\nYou can come and pick it up.\n\nThank you!`,
+            html: `
+              <h3>Your Print Request is Ready!</h3>
+              <p>Hello <strong>${request.full_name}</strong>,</p>
+              <p>Great news! Your print request is now <strong>COMPLETED</strong>.</p>
+              <p>You can pick it up at your convenience.</p>
+              <br/>
+              <p><em>Submitted on: ${new Date(request.created_at).toLocaleDateString()}</em></p>
+            `
+          });
+        }
       }
     }
     res.json({ message: 'Status updated' });
