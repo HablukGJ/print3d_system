@@ -8,3 +8,4 @@ coverage/
 !.env.example
 .env
 database.sqlite
+.idea/

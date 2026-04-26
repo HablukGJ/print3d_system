@@ -31,12 +31,12 @@ export const Login: React.FC = () => {
       >
         <div className="flex flex-col items-center mb-8">
           <h1 className="text-3xl font-black text-slate-800 tracking-tight">3D<span className="text-indigo-600">PRINT</span></h1>
-          <p className="text-slate-500 font-medium">Welcome back, please login</p>
+          <p className="text-slate-500 font-medium">С возвращением, пожалуйста, войдите в систему</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Email Address</label>
+            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Эл. адрес</label>
             <input 
               type="email" 
               value={email}
@@ -47,7 +47,7 @@ export const Login: React.FC = () => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Password</label>
+            <label className="text-xs font-bold text-slate-500 uppercase ml-1">Пароль</label>
             <input 
               type="password" 
               value={password}
@@ -61,12 +61,12 @@ export const Login: React.FC = () => {
             type="submit" 
             className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-2"
           >
-            <LogIn size={20} /> Login to Portal
+            <LogIn size={20} /> Войти
           </button>
         </form>
 
         <p className="mt-8 text-center text-slate-500 font-medium">
-          Don't have an account? <Link to="/register" className="text-indigo-600 font-bold hover:underline">Register here</Link>
+          Еще нет аккаунта? <Link to="/register" className="text-indigo-600 font-bold hover:underline">Зарегистрироваться</Link>
         </p>
       </motion.div>
     </div>

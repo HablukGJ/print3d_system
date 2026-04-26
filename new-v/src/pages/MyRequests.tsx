@@ -66,8 +66,8 @@ export const MyRequests: React.FC = () => {
       <div className="space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-black text-slate-800 tracking-tight">My Print Requests</h2>
-            <p className="text-slate-500 font-medium">Create and track your 3D printing jobs</p>
+            <h2 className="text-3xl font-black text-slate-800 tracking-tight">Мои запросы</h2>
+            <p className="text-slate-500 font-medium">Создавайте и отслеживайте задания на 3D-печать</p>
           </div>
           <div className="flex gap-2">
             <button
@@ -75,7 +75,7 @@ export const MyRequests: React.FC = () => {
                 className={`flex items-center justify-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all border ${showArchive ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400'}`}
             >
               <Clock size={20} />
-              {showArchive ? 'Hide Archive' : 'View Archive'}
+              {showArchive ? 'Закрыть' : 'Архив'}
             </button>
             {!showArchive && (
                 <button
@@ -83,7 +83,7 @@ export const MyRequests: React.FC = () => {
                     className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
                 >
                   <Plus size={20} />
-                  {showForm ? 'Cancel' : 'New Request'}
+                  {showForm ? 'Отменить' : 'Новый запрос'}
                 </button>
             )}
           </div>
@@ -100,27 +100,27 @@ export const MyRequests: React.FC = () => {
                 <form onSubmit={handleCreateRequest} className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase ml-1">FIO (Full Name)</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase ml-1">ФИО</label>
                       <input name="full_name" className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all" placeholder="Ivanov Ivan Ivanovich" required />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-500 uppercase ml-1">Group</label>
+                      <label className="text-xs font-bold text-slate-500 uppercase ml-1">Группа</label>
                       <input name="student_group" className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all" placeholder="P-202" required />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Comment / Details</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Комментарий</label>
                     <textarea name="comment" className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all min-h-[100px]" placeholder="Dimensions, material, or any specific instructions..." />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Drawing / File (Optional)</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Чертеж</label>
                     <input
                         type="file"
                         name="drawing"
                         className="w-full px-5 py-3 rounded-2xl border border-slate-200 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-black file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
                   </div>
-                  <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all">Submit Request</button>
+                  <button type="submit" className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition-all">Отправить запрос</button>
                 </form>
               </motion.div>
           )}
@@ -169,14 +169,17 @@ export const MyRequests: React.FC = () => {
                     </div>
                     <div className="flex items-center justify-between md:justify-end gap-4 border-t md:border-t-0 pt-4 md:pt-0">
                       <div className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${getStatusStyle(request.status)}`}>
-                        {request.status}
+                        {request.status == 'pending' && 'В очереди'}
+                        {request.status == 'processing' && 'Начат'}
+                        {request.status == 'completed' && 'Выполнен'}
+                        {request.status == 'archived' && 'Архивирован'}
                       </div>
                       {request.status !== 'archived' && (
                           <button
                               onClick={() => handleArchive(request.id)}
                               className="text-slate-400 hover:text-slate-600 font-bold text-sm underline decoration-slate-200 underline-offset-4"
                           >
-                            Archive
+                            Архивировать
                           </button>
                       )}
                       {request.status === 'completed' && (
@@ -190,10 +193,10 @@ export const MyRequests: React.FC = () => {
           ) : (
               <div className="text-center py-20 bg-slate-100/50 rounded-3xl border border-dashed border-slate-300">
                 <p className="text-slate-400 font-bold text-xl">
-                  {showArchive ? 'Archive is empty' : 'No active requests'}
+                  {showArchive ? 'Пусто' : 'У вас нет заявок'}
                 </p>
                 <p className="text-slate-400 font-medium">
-                  {showArchive ? 'Archived items will appear here' : 'Create your first 3D printing job above'}
+                  {showArchive ? 'Здесь появятся архивированные заявки' : 'Создайте заявку на 3D-печать'}
                 </p>
               </div>
           )}

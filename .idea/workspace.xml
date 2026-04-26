@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b6407833-02e9-4d5a-b038-16d98913a7f2" name="Changes" comment="file adding">
+    <list default="true" id="b6407833-02e9-4d5a-b038-16d98913a7f2" name="Changes" comment="added email sender">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/new-v/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new-v/database.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/database.sqlite" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new-v/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new-v/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/new-v/server/routes/requests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/server/routes/requests.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/components/Layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/components/Layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/pages/AdminDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/pages/AdminDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/pages/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/pages/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/pages/MyRequests.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/pages/MyRequests.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/pages/Profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/pages/Profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/new-v/src/pages/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/new-v/src/pages/Register.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +71,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Grigory\Downloads\event-management-system\new-v" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Grigory\Downloads\event-management-system\new-v" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -93,7 +98,7 @@
       <workItem from="1777102538335" duration="1403000" />
       <workItem from="1777104306112" duration="6769000" />
       <workItem from="1777127265627" duration="7325000" />
-      <workItem from="1777177842406" duration="1782000" />
+      <workItem from="1777177842406" duration="3953000" />
     </task>
     <task id="LOCAL-00001" summary="edited template, added 3dprint requests and opportunity to delete account">
       <option name="closed" value="true" />
@@ -127,7 +132,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777127498844</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added email sender">
+      <option name="closed" value="true" />
+      <created>1777180183738</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1777180183738</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -138,6 +151,7 @@
     <MESSAGE value="added README" />
     <MESSAGE value="added presentation" />
     <MESSAGE value="file adding" />
-    <option name="LAST_COMMIT_MESSAGE" value="file adding" />
+    <MESSAGE value="added email sender" />
+    <option name="LAST_COMMIT_MESSAGE" value="added email sender" />
   </component>
 </project>

@@ -52,8 +52,8 @@ export const Profile: React.FC = () => {
   return (
       <div className="max-w-4xl mx-auto space-y-8">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Profile</h2>
-          <p className="text-slate-500 font-medium">Manage your account settings</p>
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight">Профиль</h2>
+          <p className="text-slate-500 font-medium">Управление настройками аккаунта</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -67,7 +67,7 @@ export const Profile: React.FC = () => {
                   <h2 className="text-3xl font-bold text-slate-800">{user?.name}</h2>
                   <p className="text-slate-500 flex items-center gap-2">
                     {user?.role === 'ADMIN' ? <ShieldCheck size={16} className="text-indigo-600" /> : <UserIcon size={16} className="text-indigo-600" />}
-                    {user?.role}
+                    {user?.role === 'USER' ? 'Пользователь' : 'Админ'}
                   </p>
                 </div>
               </div>
@@ -80,10 +80,10 @@ export const Profile: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <h3 className="text-lg font-bold text-slate-800 border-b pb-2">Edit Profile</h3>
+                <h3 className="text-lg font-bold text-slate-800 border-b pb-2">Редактировать профиль</h3>
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Full Name</label>
+                    <label className="text-xs font-bold text-slate-500 uppercase ml-1">Полное имя</label>
                     <input
                         type="text"
                         name="name"
@@ -93,7 +93,7 @@ export const Profile: React.FC = () => {
                     />
                   </div>
                   <button type="submit" className="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200">
-                    Save Changes
+                    Применить изменения
                   </button>
                 </form>
               </div>
@@ -103,13 +103,13 @@ export const Profile: React.FC = () => {
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                   <ArrowRightLeft size={24} className="text-indigo-600" />
-                  Switch Account
+                  Сменить аккаунт
                 </h3>
                 <button
                     onClick={() => logout()}
                     className="text-slate-500 font-bold hover:text-indigo-600 flex items-center gap-1 transition-colors"
                 >
-                  <LogOut size={16} /> Logout
+                  <LogOut size={16} /> Выйти
                 </button>
               </div>
 
@@ -148,7 +148,7 @@ export const Profile: React.FC = () => {
                     className="flex items-center justify-center gap-2 p-4 rounded-2xl border border-dashed border-slate-300 text-slate-500 hover:border-indigo-300 hover:text-indigo-600 transition-all"
                 >
                   <Plus size={20} />
-                  <span className="font-bold">Add New Account</span>
+                  <span className="font-bold">Добавить аккаунт</span>
                 </button>
               </div>
             </div>
@@ -158,15 +158,15 @@ export const Profile: React.FC = () => {
                 <div className="space-y-1">
                   <h3 className="text-xl font-bold text-rose-600 flex items-center gap-2">
                     <Trash2 size={24} />
-                    Danger Zone
+                    Опасная зона
                   </h3>
-                  <p className="text-slate-500 text-sm">Once you delete your account, there is no going back. Please be certain.</p>
+                  <p className="text-slate-500 text-sm pr-1">После удаления аккаунта вернуть его будет невозможно. Пожалуйста, убедитесь, что вы все сделали правильно.</p>
                 </div>
                 <button
                     onClick={handleDeleteAccount}
                     className="bg-rose-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-rose-600 transition-all shadow-lg shadow-rose-200"
                 >
-                  Delete Account
+                  Удалить аккаунт
                 </button>
               </div>
             </div>
