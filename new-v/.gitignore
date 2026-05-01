@@ -9,3 +9,4 @@ coverage/
 .env
 database.sqlite
 .idea/
+uploads/
